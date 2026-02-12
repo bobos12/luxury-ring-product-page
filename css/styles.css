@@ -1,0 +1,397 @@
+/* =========================
+   DESIGN TOKENS
+========================= */
+:root {
+  /* -------------------------
+     COLORS
+  ------------------------- */
+  --bg: #000;
+  --text-main: #fff;
+  --text-muted: #a0a0a0;
+  --accent: #ade3fe;
+  --border: #333;
+
+  /* -------------------------
+     TYPOGRAPHY
+  ------------------------- */
+  --font-primary: "Avenir Next LT W04 Thin", sans-serif;
+  --fw-light: 200;
+  --fw-regular: 300;
+  --fw-semibold: 400;
+  --fw-bold: 500;
+
+  --font-xl: 3rem;
+  --font-lg: 2.25rem;
+  --font-md: 1rem;
+  --font-sm: 0.875rem;
+  --font-xs: 0.75rem;
+
+  /* -------------------------
+     SPACING & LAYOUT
+  ------------------------- */
+  --padding-container: 5%;
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 3.125rem;
+
+  /* -------------------------
+     IMAGE RATIOS
+  ------------------------- */
+  --thumb-big-ratio: 987/1804;
+  --thumb-top-ratio: 767/1026;
+  --thumb-bottom-ratio: 767/794;
+  --product-image-ratio: 7/8;
+}
+
+/* =========================
+   RESET
+========================= */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-weight: var(--fw-light);
+  color: var(--text-main);
+  background-color: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.layout {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: var(--space-md);
+}
+
+/* =========================
+   HEADER
+========================= */
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-lg) var(--padding-container);
+}
+
+.cart-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-md);
+}
+
+.cart-status img {
+  width: 1.25rem;
+  height: 1.25rem;
+  filter: brightness(0) invert(1);
+}
+
+/* =========================
+   PRODUCT HERO / GALLERY
+========================= */
+.product-hero {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xl);
+  padding: var(--space-lg) var(--padding-container);
+}
+
+/* Main product image and thumbnails */
+.main-image-container img,
+.thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Thumbnail grid layout */
+.thumbnail-grid {
+  display: grid;
+  grid-template-areas:
+    "big top"
+    "big bottom";
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.thumb:nth-child(1) { grid-area: big; aspect-ratio: var(--thumb-big-ratio); }
+.thumb:nth-child(2) { grid-area: top; aspect-ratio: var(--thumb-top-ratio); }
+.thumb:nth-child(3) { grid-area: bottom; aspect-ratio: var(--thumb-bottom-ratio); }
+
+/* =========================
+   PRODUCT INFO
+========================= */
+.product-info h1 {
+  font-size: var(--font-xl);
+  font-weight: var(--fw-light);
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+}
+
+.price {
+  font-size: var(--font-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--accent);
+  margin-bottom: var(--space-md);
+}
+
+.description-box {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+/* =========================
+   SPECS
+========================= */
+.specs-section {
+  margin-bottom: var(--space-xl);
+}
+
+.specs-section h3 {
+  font-size: var(--font-md);
+  font-weight: var(--fw-light);
+  color: var(--accent);
+  margin-bottom: var(--space-sm);
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.875rem;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.spec-label {
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 1.4rem;
+}
+
+.spec-value {
+  font-size: 2.8rem;
+  font-weight: var(--fw-light);
+  line-height: 1.1;
+}
+
+.spec-description {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* =========================
+   COLOR & SIZE SELECTION
+========================= */
+.color-section,
+.size-section {
+  margin-bottom: var(--space-xl);
+}
+
+.color-section h3,
+.size-section h3 {
+  font-size: var(--font-md);
+  font-weight: var(--fw-light);
+  color: var(--accent);
+  margin-bottom: var(--space-sm);
+}
+
+.variants,
+.sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.variant-btn,
+.size-btn {
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.variant-btn {
+  width: 5rem;
+  height: 5.625rem;
+  overflow: hidden;
+}
+
+.size-btn {
+  width: 3.4375rem;
+  height: 3.4375rem;
+  color: var(--accent);
+  font-size: 0.8125rem;
+}
+
+.variant-btn:hover,
+.size-btn:hover {
+  border-color: var(--text-main);
+}
+
+.variant-btn.selected,
+.size-btn.selected {
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+  z-index: 1;
+}
+
+.color-swatch {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =========================
+   ADD TO CART BUTTONS
+========================= */
+.button-wrapper {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: 0.625rem;
+}
+
+.add-to-cart-btn,
+.box-btn {
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.add-to-cart-btn {
+  flex: 1;
+  padding: 1rem;
+  background-color: var(--accent);
+  border: none;
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: var(--fw-semibold);
+}
+
+.box-btn {
+  width: 2.8125rem;
+  border: 1px solid var(--border);
+  background-color: var(--accent);
+}
+
+.add-to-cart-btn:hover,
+.box-btn:hover {
+  opacity: 0.7;
+}
+
+/* =========================
+   RINGS COLLECTION
+========================= */
+.rings-collection {
+  padding: 3.75rem var(--padding-container);
+  text-align: center;
+}
+
+.collection-title {
+  font-size: 2rem;
+  font-weight: var(--fw-light);
+  margin-bottom: var(--space-xl);
+  cursor: pointer;
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 2rem;
+  justify-content: center;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 26rem;
+}
+
+.product-image {
+  width: 100%;
+  aspect-ratio: var(--product-image-ratio);
+  object-fit: cover;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.product-name {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.product-price {
+  text-align: center;
+}
+
+.collection-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.shop-button {
+  padding: 1rem 3rem;
+  border: 2px solid var(--text-main);
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: var(--space-lg);
+}
+
+.shop-button:hover {
+  background-color: var(--text-main);
+  color: #000;
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .layout { padding: 0.3rem; }
+
+  .product-hero { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .main-image-container { height: 25rem; overflow: hidden; }
+  #main-view { width: 100%; height: 100%; object-fit: cover; }
+
+  .thumbnail-grid {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0.75rem;
+    max-width: 70%;
+    overflow-x: auto;
+  }
+  .thumb { width: calc((100% - 0.5rem)/3); height: 150px; object-fit: cover; flex: 0 0 auto; }
+
+  .specs-grid { display: flex; flex-direction: row; gap: 1.5rem; }
+  .spec-item { text-align: center; }
+
+  .sizes { flex-wrap: wrap; gap: var(--space-xs); }
+
+  .button-wrapper { flex-direction: column; gap: var(--space-xs); }
+  .box-btn { display: none; width: 100%; height: 3rem; }
+
+  .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .product-card { min-height: 28rem; gap: 0.5rem; justify-content: flex-start; }
+  .product-image { height: 18rem; object-fit: contain; }
+  .shop-button { width: 50%; }
+}
