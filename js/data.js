@@ -8,9 +8,9 @@ const PRODUCT_DATA = {
   specs: { gold: "18k", diamond: "2.4c", clarity: "92%" },
   specsDescription: "Lorem ipsum dolor sit amet, dolore magna aliqua.",
   variants: [
-    { id: "v1", color: "Silver", image: "./images/color1.png" },
-    { id: "v2", color: "Gold", image: "./images/color2.png" },
-    { id: "v3", color: "Rose Gold", image: "./images/color3.png" }
+    { id: "v1", color: "Silver", image: "color1.png" },
+    { id: "v2", color: "Gold", image: "color2.png" },
+    { id: "v3", color: "Rose Gold", image: "color3.png" }
   ],
   sizes: [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5],
   relatedProducts: [
