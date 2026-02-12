@@ -1,7 +1,13 @@
-
 export class Cart {
   constructor() {
-    this.items = [];
+    // Load existing items from localStorage to maintain state across refreshes
+    const savedItems = localStorage.getItem("lexic_cart");
+    this.items = savedItems ? JSON.parse(savedItems) : [];
+  }
+
+  // Persists the current state to the browser's storage
+  saveToStorage() {
+    localStorage.setItem("lexic_cart", JSON.stringify(this.items));
   }
 
   add(product, options) {
@@ -16,7 +22,7 @@ export class Cart {
       quantity: 1
     };
 
-    // see if this item with the same options is already in the cart
+    // Check for duplicate items with exact same options
     const existing = this.items.find(
       i => i.id === item.id && i.color === item.color && i.size === item.size
     );
@@ -27,6 +33,7 @@ export class Cart {
       this.items.push(item);
     }
 
+    this.saveToStorage(); 
     this.updateCartCount();
   }
 
@@ -34,6 +41,7 @@ export class Cart {
     this.items = this.items.filter(
       i => !(i.id === productId && i.color === color && i.size === size)
     );
+    this.saveToStorage();
     this.updateCartCount();
   }
 
@@ -49,6 +57,7 @@ export class Cart {
 
   clear() {
     this.items = [];
+    this.saveToStorage();
     this.updateCartCount();
   }
 }
