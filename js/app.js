@@ -1,8 +1,13 @@
-import PRODUCT_DATA from "./data.js";
-import { Cart } from "./cart.js";
+// ----------------------
+// Helper: Get image path
+// ----------------------
+function getImagePath(filename) {
+  if (!filename) return '';
+  return filename.startsWith('images/') ? filename : `images/${filename}`;
+}
 
 // ----------------------
-// Utility: Format price
+// Utility: Format price as USD
 // ----------------------
 function formatPrice(price) {
   return new Intl.NumberFormat("en-US", {
@@ -17,7 +22,7 @@ function formatPrice(price) {
 // UIManager: Handles all DOM rendering
 // ----------------------
 class UIManager {
-  // Render header/cart status
+  // Render header with cart count
   static renderHeader(cartCount = 0) {
     const navbar = document.getElementById("navbar-container");
     if (!navbar) return;
@@ -30,55 +35,55 @@ class UIManager {
     `;
   }
 
-  // Render product image gallery
+  // Render product gallery: main image + thumbnails
   static renderProductGallery(images) {
     const galleryContainer = document.getElementById("product-gallery-container");
     if (!galleryContainer || !images?.length) return;
 
     // Main image
-    const mainImageDiv = document.createElement("div");
-    mainImageDiv.className = "main-image-container";
+    const mainDiv = document.createElement("div");
+    mainDiv.classList.add("main-image-container");
     const mainImg = document.createElement("img");
     mainImg.id = "main-view";
-    mainImg.src = `images/${images[0].src}`;
+    mainImg.src = getImagePath(images[0].src);
     mainImg.alt = images[0].alt;
-    mainImageDiv.appendChild(mainImg);
+    mainDiv.appendChild(mainImg);
 
-    // Thumbnails
+    // Thumbnail images
     const thumbContainer = document.createElement("div");
-    thumbContainer.className = "thumbnail-grid";
+    thumbContainer.classList.add("thumbnail-grid");
 
-    images.slice(1).forEach((img, idx) => {
+    images.slice(1).forEach((image, index) => {
       const thumb = document.createElement("img");
-      thumb.src = `images/${img.src}`;
-      thumb.alt = img.alt;
+      thumb.src = getImagePath(image.src);
+      thumb.alt = image.alt;
       thumb.className = "thumb";
-      if (idx === 0) thumb.classList.add("active");
+      if (index === 0) thumb.classList.add("active");
 
-      // Click: update main image
       thumb.addEventListener("click", () => {
-        mainImg.src = `images/${img.src}`;
-        mainImg.alt = img.alt;
+        mainImg.src = getImagePath(image.src);
+        mainImg.alt = image.alt;
 
-        Array.from(thumbContainer.children).forEach((t, i) =>
-          t.classList.toggle("active", i === idx)
-        );
+        // highlight selected thumbnail
+        thumbContainer.querySelectorAll(".thumb").forEach((t, i) => {
+          t.classList.toggle("active", i === index);
+        });
       });
 
       thumbContainer.appendChild(thumb);
     });
 
     galleryContainer.innerHTML = "";
-    galleryContainer.appendChild(mainImageDiv);
+    galleryContainer.appendChild(mainDiv);
     galleryContainer.appendChild(thumbContainer);
   }
 
   // Render product details
   static renderProduct(product) {
-    const productContainer = document.getElementById("product-details");
-    if (!productContainer) return;
+    const container = document.getElementById("product-details");
+    if (!container) return;
 
-    productContainer.innerHTML = `
+    container.innerHTML = `
       <h1>${product.name}</h1>
       <p class="price">${formatPrice(product.price)}</p>
       <p class="description-box">${product.description}</p>
@@ -87,37 +92,31 @@ class UIManager {
         <h3>Piece Specifications</h3>
         <p class="description-box">${product.PieceSpecifications}</p>
         <div class="specs-grid">
-          ${Object.entries(product.specs)
-            .map(
-              ([key, value]) => `
+          ${Object.entries(product.specs).map(([key, value]) => `
             <div class="spec-item">
               <span class="spec-label">${key.charAt(0).toUpperCase() + key.slice(1)}</span>
               <span class="spec-value">${value}</span>
               <span class="spec-description">${product.specsDescription}</span>
-            </div>`
-            )
-            .join("")}
+            </div>
+          `).join("")}
         </div>
       </div>
 
       <div class="color-section">
         <h3>Color</h3>
         <div class="variants">
-          ${product.variants
-            .map(
-              (v) => `
+          ${product.variants.map(v => `
             <button class="variant-btn" data-id="${v.id}" title="${v.color}" aria-pressed="false">
-              <img src="${v.image}" alt="${v.color}" class="color-swatch">
-            </button>`
-            )
-            .join("")}
+              <img src="${getImagePath(v.image)}" alt="${v.color}" class="color-swatch">
+            </button>
+          `).join("")}
         </div>
       </div>
 
       <div class="size-section">
         <h3>Size</h3>
         <div class="sizes">
-          ${product.sizes.map((s) => `<button class="size-btn" aria-pressed="false">${s}</button>`).join("")}
+          ${product.sizes.map(s => `<button class="size-btn" aria-pressed="false">${s}</button>`).join("")}
         </div>
       </div>
 
@@ -130,22 +129,19 @@ class UIManager {
 
   // Render related rings collection
   static renderRingCollection(products) {
-    const ringsContainer = document.getElementById("rings-collection-container");
-    if (!ringsContainer) return;
+    const container = document.getElementById("rings-collection-container");
+    if (!container) return;
 
-    ringsContainer.innerHTML = `
+    container.innerHTML = `
       <h2 class="collection-title">Ring Collection</h2>
       <div class="collection-grid">
-        ${products
-          .map(
-            (p) => `
+        ${products.map(p => `
           <div class="product-card">
-            <img src="images/${p.img}" alt="${p.name}" class="product-image">
+            <img src="${getImagePath(p.img)}" alt="${p.name}" class="product-image">
             <h3 class="product-name">${p.name}</h3>
             <p class="product-price">${formatPrice(p.price)}</p>
-          </div>`
-          )
-          .join("")}
+          </div>
+        `).join("")}
       </div>
       <div class="collection-footer">
         <button class="shop-button">Shop Rings</button>
@@ -153,16 +149,17 @@ class UIManager {
     `;
   }
 
-  // Helper: setup toggle selection with visual & accessibility feedback
+  // toggle selection for color/size buttons
   static setupToggleSelection(buttons, className = "selected", onSelect) {
-    buttons.forEach((btn) =>
+    buttons.forEach(btn =>
       btn.addEventListener("click", function () {
-        buttons.forEach((b) => {
+        buttons.forEach(b => {
           if (b !== this) {
             b.classList.remove(className);
             b.setAttribute("aria-pressed", "false");
           }
         });
+
         this.classList.add(className);
         this.setAttribute("aria-pressed", "true");
 
@@ -193,37 +190,31 @@ class ProductPage {
     this.cart.updateCartCount();
   }
 
-  // Handle color & size selection
+  // Setup color & size selections
   setupOptionSelection() {
     const colorBtns = document.querySelectorAll(".variant-btn");
-    UIManager.setupToggleSelection(colorBtns, "selected", (btn) => {
+    UIManager.setupToggleSelection(colorBtns, "selected", btn => {
       const variantId = btn.dataset.id;
-      const variant = this.product.variants.find((v) => v.id === variantId);
+      const variant = this.product.variants.find(v => v.id === variantId);
       this.selectedColor = variant ? variant.color : null;
     });
-    // Default selection
-    if (colorBtns.length > 0) {
-      colorBtns[0].click();
-    }
+    if (colorBtns.length) colorBtns[0].click(); // default selection
 
     const sizeBtns = document.querySelectorAll(".size-btn");
-    UIManager.setupToggleSelection(sizeBtns, "selected", (btn) => {
+    UIManager.setupToggleSelection(sizeBtns, "selected", btn => {
       this.selectedSize = btn.textContent;
     });
-    // Default selection
-    if (sizeBtns.length > 0) {
-      sizeBtns[0].click();
-    }
+    if (sizeBtns.length) sizeBtns[0].click(); // default selection
   }
 
   // Add to cart button behavior
   setupAddToCart() {
-    const addToCartBtn = document.getElementById("add-to-cart");
-    if (!addToCartBtn) return;
+    const addBtn = document.getElementById("add-to-cart");
+    if (!addBtn) return;
 
-    addToCartBtn.addEventListener("click", () => {
+    addBtn.addEventListener("click", () => {
       if (!this.selectedColor || !this.selectedSize) {
-        alert("Please select a color and size before adding to cart");
+        alert("Oops! Please pick a color and size before adding this to your cart.");
         return;
       }
 
@@ -232,18 +223,25 @@ class ProductPage {
         size: this.selectedSize,
       });
 
-      // Optional: tiny feedback
-      const cartCountEl = document.getElementById("cart-count");
-      if (cartCountEl) {
-        cartCountEl.classList.add("highlight");
-        setTimeout(() => cartCountEl.classList.remove("highlight"), 300);
-      }
+      // tiny feedback on cart count
+      this.highlightCartCount();
     });
+  }
+
+  // Highlight cart count briefly
+  highlightCartCount() {
+    const cartEl = document.getElementById("cart-count");
+    if (!cartEl) return;
+    cartEl.classList.add("highlight");
+    setTimeout(() => cartEl.classList.remove("highlight"), 300);
   }
 }
 
 // ----------------------
-// Initialize
+// Initialize Product Page
 // ----------------------
+import PRODUCT_DATA from "./data.js";
+import { Cart } from "./cart.js";
+
 const productPage = new ProductPage(PRODUCT_DATA);
 productPage.init();
